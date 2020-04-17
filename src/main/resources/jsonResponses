@@ -1,0 +1,41 @@
+{
+	"total_confirmed" :"",
+	"total_recovered" :"",
+	"total_deaths" :"",
+	"total_active" :"",
+	"today_confirmed" :"",
+	"today_recovered" :"",
+	"today_deaths" :""
+}
+
+{
+	"statewise": [
+		{
+			"stae" : "",
+			"total_confirmed" :"",
+			"total_recovered" :"",
+			"total_deaths" :""
+		}
+	]
+}
+
+{
+	"districtwise": [
+		{
+			"district" : "",
+			"total_confirmed" :"",
+			"total_recovered" :"",
+			"total_deaths" :""
+		}
+	]
+}
+
+{
+	"history" : [
+	"date" : {
+		"confirmed":,
+		"recovered":,
+		"deaths":
+	}
+	]
+}
