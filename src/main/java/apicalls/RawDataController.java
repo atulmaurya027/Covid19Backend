@@ -12,9 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import responses.CountsData;
+import responses.*;
 import responses.Statewise;
-import responses.StatewiseData;
 
 import javax.annotation.Resource;
 import java.io.IOException;
@@ -146,11 +145,13 @@ public class RawDataController {
         int todayDied = 0;
         ZonedDateTime now = ZonedDateTime.now(ZoneId.of("Asia/Kolkata"));
         String day = DateTimeFormatter.ofPattern("dd/MM/YYYY").format(now);
+        String day1 = DateTimeFormatter.ofPattern("dd-MMM-YY").format(now);
 
         CountsData countsData = new CountsData();
         RawData outputListRawData = new RawData();
         List<State> states = new ArrayList<State>();
         List<StatesHistory> statesHistoryList = new ArrayList<StatesHistory>();
+        StatesHistoryWrapper statesHistoryWrapper = null;
         List<DistrictData> districtDataList = new LinkedList<DistrictData>();
         List<PatientStatus> patientStatusList = new LinkedList<PatientStatus>();
         PatientStatusWrapper patientStatusWrapper = new PatientStatusWrapper();
@@ -207,28 +208,22 @@ public class RawDataController {
             totalActivePatients = totalPatients - totalRecovered - totalDied;
 
 
-//            HttpResponse responseStateDailyChanges = httpClient.execute(requestDailyChanges);
-//            String responseBodyStateDailyChanges = EntityUtils.toString(responseStateDailyChanges.getEntity());
-//            statesHistoryList = (List<StatesHistory>) gson.fromJson(responseBodyStateDailyChanges, ArrayList.class);
-//            for (int i = 0; i < statesHistoryList.size(); i++)
-//            {
-//                int statewiseCountConfirmed = 0;
-//                int statewiseCountDied = 0;
-//                int statewiseCountRecovered = 0;
-//                StatesHistory statesHistory = gson.fromJson(gson.toJson(statesHistoryList.get(i)), StatesHistory.class);
-//                if(statesHistory.getDate().equalsIgnoreCase(day) && statesHistory.getStatus().equalsIgnoreCase("Confirmed"))
-//                {
-//                    todayPatients = sumState(todayPatients, statesHistory);
-//                }
-//                if(statesHistory.getDate().equalsIgnoreCase(day) && statesHistory.getStatus().equalsIgnoreCase("Recovered"))
-//                {
-//                    todayRecovered = sumState(todayRecovered, statesHistory);
-//                }
-//                if(statesHistory.getDate().equalsIgnoreCase(day) && statesHistory.getStatus().equalsIgnoreCase("Recovered"))
-//                {
-//                    todayDied = sumState(todayDied, statesHistory);
-//                }
-//            }
+            // TODO To check tomorrow
+            todayPatients = 0;
+            HttpResponse responseStateDailyChanges = httpClient.execute(requestDailyChanges);
+            String responseBodyStateDailyChanges = EntityUtils.toString(responseStateDailyChanges.getEntity());
+            statesHistoryWrapper = gson.fromJson(responseBodyStateDailyChanges, StatesHistoryWrapper.class);
+            for (StatesHistory statesHistory : statesHistoryWrapper.getStatesHistory())
+            {
+                int statewiseCountConfirmed = 0;
+                int statewiseCountDied = 0;
+                int statewiseCountRecovered = 0;
+                //StatesHistory statesHistory = gson.fromJson(gson.toJson(statesHistoryList.get(i)), StatesHistory.class);
+                if(statesHistory.getDate().equalsIgnoreCase(day1) && statesHistory.getStatus().equalsIgnoreCase("Confirmed"))
+                {
+                    todayPatients = sumState(todayPatients, statesHistory);
+                }
+            }
 
             //End of //Use this for total, statewise and districtwise count, total recovered and total died
 
